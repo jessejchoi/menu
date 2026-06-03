@@ -1,0 +1,81 @@
+{
+  "menu": {
+    "title": "Weekly Menu",
+    "categories": [
+      {
+        "id": "entrees",
+        "name": "Entrees",
+        "items": [
+          { "id": "chicken-napa-rolls", "name": "Chicken napa rolls" },
+          { "id": "chicken-broccoli-pancake", "name": "Chicken broccoli pancake" },
+          { "id": "shabu-shabu", "name": "Shabu shabu" },
+          { "id": "sate-taichan", "name": "Sate taichan" },
+          { "id": "pecel", "name": "Pecel" },
+          { "id": "soondubu", "name": "Soondubu" },
+          { "id": "chicken-bubur", "name": "Chicken bubur" },
+          { "id": "ginger-chicken", "name": "Ginger chicken" }
+        ]
+      },
+      {
+        "id": "light-snacks",
+        "name": "Light Snacks",
+        "items": [
+          { "id": "sweet-potato-fries", "name": "sweet potato fries" },
+          { "id": "tofu-tempeh", "name": "tofu & tempeh" }
+        ]
+      }
+    ]
+  },
+  "grocery": {
+    "title": "Grocery Checklist",
+    "categories": [
+      {
+        "id": "protein",
+        "name": "Protein",
+        "items": [
+          { "id": "chicken", "name": "Chicken" },
+          { "id": "thin-sliced-beef", "name": "Thin-sliced beef" },
+          { "id": "tofu", "name": "Tofu" },
+          { "id": "tempeh", "name": "Tempeh" },
+          { "id": "eggs", "name": "Eggs" }
+        ]
+      },
+      {
+        "id": "produce",
+        "name": "Produce",
+        "items": [
+          { "id": "napa-cabbage", "name": "Napa cabbage" },
+          { "id": "broccoli", "name": "Broccoli" },
+          { "id": "sweet-potatoes", "name": "Sweet potatoes" },
+          { "id": "ginger", "name": "Ginger" },
+          { "id": "garlic", "name": "Garlic" },
+          { "id": "scallions", "name": "Scallions" },
+          { "id": "lime", "name": "Lime" },
+          { "id": "greens-for-pecel", "name": "Greens for pecel" }
+        ]
+      },
+      {
+        "id": "pantry",
+        "name": "Pantry",
+        "items": [
+          { "id": "rice", "name": "Rice" },
+          { "id": "rice-flour", "name": "Rice flour" },
+          { "id": "soy-sauce", "name": "Soy sauce" },
+          { "id": "sesame-oil", "name": "Sesame oil" },
+          { "id": "chicken-broth", "name": "Chicken broth" },
+          { "id": "peanut-sauce", "name": "Peanut sauce" },
+          { "id": "gochugaru", "name": "Gochugaru" },
+          { "id": "dashi-or-shabu-broth", "name": "Dashi or shabu broth" }
+        ]
+      },
+      {
+        "id": "frozen",
+        "name": "Frozen",
+        "items": [
+          { "id": "shabu-vegetables", "name": "Shabu vegetables" },
+          { "id": "dumpling-wrappers", "name": "Dumpling wrappers" }
+        ]
+      }
+    ]
+  }
+}

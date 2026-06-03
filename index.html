@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Menu and Grocery Checklist</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1c2420;
+        --muted: #66736d;
+        --line: #d7ddd7;
+        --paper: #fbfbf7;
+        --panel: #ffffff;
+        --accent: #2f6f5e;
+        --accent-strong: #204f43;
+        --gold: #d69e2e;
+        --rose: #b55b64;
+        --shadow: 0 20px 55px rgba(28, 36, 32, 0.12);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 250px;
+        display: flex;
+        align-items: flex-end;
+        isolation: isolate;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(15, 22, 18, 0.78), rgba(15, 22, 18, 0.3) 52%, rgba(15, 22, 18, 0.12)),
+          url("assets/kitchen-prep.png") center / cover;
+        z-index: -2;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 72px;
+        background: linear-gradient(180deg, rgba(251, 251, 247, 0), var(--paper));
+        z-index: -1;
+      }
+
+      .hero-inner,
+      .content {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .hero-inner {
+        padding: 42px 0 64px;
+        color: #fffdf7;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        font-size: clamp(2.2rem, 7vw, 4.8rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        max-width: 550px;
+        margin-top: 16px;
+        color: rgba(255, 253, 247, 0.86);
+        font-size: 1rem;
+        line-height: 1.55;
+      }
+
+      .content {
+        flex: 1;
+        margin-top: -28px;
+        padding-bottom: 48px;
+      }
+
+      .shell {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        overflow: clip;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(251, 251, 247, 0.8);
+      }
+
+      .tabs {
+        display: inline-grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #f0f2ec;
+        min-width: min(100%, 310px);
+      }
+
+      .tab {
+        min-height: 42px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-weight: 750;
+      }
+
+      .tab[aria-selected="true"] {
+        color: var(--accent-strong);
+        background: #ffffff;
+        box-shadow: 0 5px 14px rgba(32, 79, 67, 0.12);
+      }
+
+      .tools {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search {
+        min-width: min(100%, 260px);
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0 14px;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      .button {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0 14px;
+        background: #fff;
+        color: var(--accent-strong);
+        cursor: pointer;
+        font-weight: 750;
+      }
+
+      .button:hover,
+      .tab:hover {
+        border-color: rgba(47, 111, 94, 0.4);
+      }
+
+      .panels {
+        padding: clamp(18px, 3vw, 30px);
+      }
+
+      .panel {
+        display: none;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      .panel-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+
+      .panel-header h2 {
+        font-size: clamp(1.45rem, 3vw, 2.15rem);
+        line-height: 1.08;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      #menu-panel {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: clamp(18px, 4vw, 38px);
+        border: 1px solid #d8caa9;
+        background:
+          linear-gradient(90deg, rgba(214, 158, 46, 0.08), transparent 22%, transparent 78%, rgba(214, 158, 46, 0.08)),
+          #fffdf5;
+        box-shadow: inset 0 0 0 8px #fff8e8;
+      }
+
+      #menu-panel .panel-header {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      #menu-panel .panel-header::before,
+      #menu-panel .panel-header::after {
+        content: "";
+        width: min(220px, 60%);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #b88928, transparent);
+      }
+
+      #menu-panel .panel-header h2 {
+        color: #2b2416;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        font-weight: 700;
+        line-height: 0.95;
+      }
+
+      #menu-panel .meta {
+        color: #8b6c2e;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .restaurant-menu {
+        display: grid;
+        gap: 34px;
+      }
+
+      .restaurant-menu .category {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        overflow: visible;
+      }
+
+      .restaurant-menu .category h3 {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0;
+        border: 0;
+        color: #7c4f19;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-align: center;
+      }
+
+      .restaurant-menu .category h3::before,
+      .restaurant-menu .category h3::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: #dcc99b;
+      }
+
+      .restaurant-menu .item-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 34px;
+        padding: 18px 4px 0;
+      }
+
+      .restaurant-menu .menu-item {
+        min-height: 0;
+        align-items: flex-start;
+        padding: 0 0 14px;
+        border-bottom: 1px dotted #d9c8a0;
+        border-radius: 0;
+        color: #2e2a20;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.25;
+      }
+
+      .restaurant-menu .menu-item::before {
+        width: 6px;
+        height: 6px;
+        flex-basis: 6px;
+        margin-top: 0.45em;
+        background: #b88928;
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+        gap: 16px;
+      }
+
+      .category {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .category h3 {
+        padding: 15px 16px;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.95rem;
+        color: var(--accent-strong);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .item-list {
+        list-style: none;
+        margin: 0;
+        padding: 8px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .menu-item,
+      .check-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 11px;
+        border-radius: 7px;
+        color: var(--ink);
+      }
+
+      .menu-item::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        flex: 0 0 9px;
+        border-radius: 50%;
+        background: var(--gold);
+      }
+
+      .check-item {
+        cursor: pointer;
+      }
+
+      .check-item:hover {
+        background: #f6f7f2;
+      }
+
+      .check-item input {
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        flex: 0 0 22px;
+        border: 2px solid #98a69f;
+        border-radius: 6px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+      }
+
+      .check-item input:checked {
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+
+      .check-item input:checked::after {
+        content: "";
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        transform: rotate(-45deg) translate(1px, -1px);
+      }
+
+      .check-item span {
+        transition: color 140ms ease, text-decoration-color 140ms ease;
+      }
+
+      .check-item input:checked + span {
+        color: #7d8983;
+        text-decoration: line-through;
+        text-decoration-color: rgba(181, 91, 100, 0.65);
+      }
+
+      .empty,
+      .error {
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        color: var(--muted);
+        background: #fff;
+      }
+
+      .error {
+        border-color: rgba(181, 91, 100, 0.45);
+        color: #813d45;
+      }
+
+      @media (max-width: 680px) {
+        .hero {
+          min-height: 232px;
+        }
+
+        .hero-inner,
+        .content {
+          width: min(100% - 24px, 1120px);
+        }
+
+        .hero-inner {
+          padding-bottom: 54px;
+        }
+
+        .toolbar,
+        .tools,
+        .search,
+        .button {
+          width: 100%;
+        }
+
+        .tabs {
+          width: 100%;
+        }
+
+        .button {
+          justify-content: center;
+        }
+
+        #menu-panel {
+          padding: 24px 16px;
+          box-shadow: inset 0 0 0 5px #fff8e8;
+        }
+
+        .restaurant-menu .item-list {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .restaurant-menu .category h3 {
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-label="Kitchen prep">
+        <div class="hero-inner">
+          <h1>Menu and Grocery Checklist</h1>
+          <p>Plan meals, shop once, and keep the list editable from one small data file.</p>
+        </div>
+      </section>
+
+      <section class="content">
+        <div class="shell">
+          <div class="toolbar">
+            <div class="tabs" role="tablist" aria-label="Planner tabs">
+              <button class="tab" id="menu-tab" type="button" role="tab" aria-selected="true" aria-controls="menu-panel" data-tab="menu">Menu</button>
+              <button class="tab" id="grocery-tab" type="button" role="tab" aria-selected="false" aria-controls="grocery-panel" data-tab="grocery">Grocery</button>
+            </div>
+
+            <div class="tools">
+              <input class="search" id="search" type="search" autocomplete="off" placeholder="Filter items">
+              <button class="button" id="clear-checked" type="button">Clear checks</button>
+            </div>
+          </div>
+
+          <div class="panels">
+            <section class="panel active" id="menu-panel" role="tabpanel" aria-labelledby="menu-tab"></section>
+            <section class="panel" id="grocery-panel" role="tabpanel" aria-labelledby="grocery-tab"></section>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const DATA_URL = "data/menu-data.json";
+      const CHECKED_KEY = "menu-grocery-checked-items";
+
+      const state = {
+        activeTab: "menu",
+        data: null,
+        checked: readChecked(),
+        query: ""
+      };
+
+      const tabs = Array.from(document.querySelectorAll(".tab"));
+      const panels = {
+        menu: document.querySelector("#menu-panel"),
+        grocery: document.querySelector("#grocery-panel")
+      };
+      const searchInput = document.querySelector("#search");
+      const clearButton = document.querySelector("#clear-checked");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          state.activeTab = tab.dataset.tab;
+          syncTabs();
+          render();
+        });
+      });
+
+      searchInput.addEventListener("input", (event) => {
+        state.query = event.target.value.trim().toLowerCase();
+        render();
+      });
+
+      clearButton.addEventListener("click", () => {
+        state.checked = {};
+        writeChecked(state.checked);
+        render();
+      });
+
+      loadData();
+
+      async function loadData() {
+        try {
+          const response = await fetch(DATA_URL, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`Could not load ${DATA_URL}`);
+          }
+          state.data = await response.json();
+          render();
+        } catch (error) {
+          renderError(error);
+        }
+      }
+
+      function render() {
+        if (!state.data) return;
+
+        renderCollection("menu", state.data.menu, false);
+        renderCollection("grocery", state.data.grocery, true);
+        clearButton.hidden = state.activeTab !== "grocery";
+      }
+
+      function renderCollection(tabName, collection, isChecklist) {
+        const panel = panels[tabName];
+        const categories = filterCategories(collection.categories || []);
+        const itemCount = categories.reduce((total, category) => total + category.items.length, 0);
+
+        panel.replaceChildren(
+          headerFor(collection.title, itemCount),
+          categories.length ? gridFor(categories, isChecklist) : emptyFor()
+        );
+      }
+
+      function filterCategories(categories) {
+        return categories
+          .map((category) => ({
+            ...category,
+            items: (category.items || []).filter((item) => item.name.toLowerCase().includes(state.query))
+          }))
+          .filter((category) => category.items.length);
+      }
+
+      function headerFor(title, itemCount) {
+        const header = document.createElement("div");
+        header.className = "panel-header";
+
+        const heading = document.createElement("h2");
+        heading.textContent = title;
+
+        const meta = document.createElement("p");
+        meta.className = "meta";
+        meta.textContent = `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
+
+        header.append(heading, meta);
+        return header;
+      }
+
+      function gridFor(categories, isChecklist) {
+        const grid = document.createElement("div");
+        grid.className = isChecklist ? "category-grid" : "restaurant-menu";
+
+        categories.forEach((category) => {
+          const card = document.createElement("article");
+          card.className = "category";
+
+          const heading = document.createElement("h3");
+          heading.textContent = category.name;
+
+          const list = document.createElement("ul");
+          list.className = "item-list";
+
+          category.items.forEach((item) => {
+            list.append(isChecklist ? groceryItemFor(item) : menuItemFor(item));
+          });
+
+          card.append(heading, list);
+          grid.append(card);
+        });
+
+        return grid;
+      }
+
+      function menuItemFor(item) {
+        const row = document.createElement("li");
+        row.className = "menu-item";
+        row.textContent = item.name;
+        return row;
+      }
+
+      function groceryItemFor(item) {
+        const row = document.createElement("li");
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        const text = document.createElement("span");
+
+        row.append(label);
+        label.className = "check-item";
+        checkbox.type = "checkbox";
+        checkbox.checked = Boolean(state.checked[item.id]);
+        checkbox.addEventListener("change", () => {
+          state.checked[item.id] = checkbox.checked;
+          if (!checkbox.checked) {
+            delete state.checked[item.id];
+          }
+          writeChecked(state.checked);
+        });
+        text.textContent = item.name;
+
+        label.append(checkbox, text);
+        return row;
+      }
+
+      function emptyFor() {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "No matching items.";
+        return empty;
+      }
+
+      function renderError(error) {
+        Object.values(panels).forEach((panel) => {
+          const message = document.createElement("p");
+          message.className = "error";
+          message.textContent = `${error.message}. Start a local server from this folder so the browser can fetch the data file.`;
+          panel.replaceChildren(message);
+        });
+      }
+
+      function syncTabs() {
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.tab === state.activeTab;
+          tab.setAttribute("aria-selected", String(isActive));
+          tab.tabIndex = isActive ? 0 : -1;
+        });
+
+        Object.entries(panels).forEach(([name, panel]) => {
+          panel.classList.toggle("active", name === state.activeTab);
+        });
+      }
+
+      function readChecked() {
+        try {
+          return JSON.parse(localStorage.getItem(CHECKED_KEY)) || {};
+        } catch {
+          return {};
+        }
+      }
+
+      function writeChecked(checked) {
+        localStorage.setItem(CHECKED_KEY, JSON.stringify(checked));
+      }
+    </script>
+  </body>
+</html>
