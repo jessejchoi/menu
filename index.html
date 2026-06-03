@@ -53,7 +53,7 @@
       }
 
       .masthead {
-        padding: clamp(38px, 8vw, 76px) 0 28px;
+        padding: clamp(28px, 5vw, 48px) 0 20px;
         text-align: center;
       }
 
@@ -68,7 +68,7 @@
       .masthead-rule {
         width: min(480px, 82%);
         height: 1px;
-        margin: 22px auto 0;
+        margin: 16px auto 0;
         background: linear-gradient(90deg, transparent, var(--accent), transparent);
       }
 
@@ -80,20 +80,20 @@
       }
 
       h1 {
-        margin-top: 10px;
+        margin-top: 8px;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(2.6rem, 8vw, 6rem);
+        font-size: clamp(2rem, 5vw, 4rem);
         font-weight: 500;
-        line-height: 0.92;
+        line-height: 0.98;
         letter-spacing: 0;
       }
 
       .masthead p {
         max-width: 520px;
-        margin: 18px auto 0;
+        margin: 12px auto 0;
         color: var(--muted);
-        font-size: 1rem;
-        line-height: 1.7;
+        font-size: 0.95rem;
+        line-height: 1.55;
       }
 
       .content {
@@ -189,30 +189,6 @@
         display: block;
       }
 
-      .panel-header {
-        display: grid;
-        justify-items: center;
-        gap: 10px;
-        margin-bottom: 34px;
-        text-align: center;
-      }
-
-      .panel-header h2 {
-        color: var(--accent-strong);
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(2rem, 5vw, 3.4rem);
-        font-weight: 500;
-        line-height: 1;
-      }
-
-      .meta {
-        color: var(--accent);
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-      }
-
       #menu-panel {
         max-width: 920px;
         margin: 0 auto;
@@ -222,22 +198,6 @@
           linear-gradient(90deg, rgba(185, 144, 61, 0.08), transparent 24%, transparent 76%, rgba(185, 144, 61, 0.08)),
           var(--panel);
         box-shadow: inset 0 0 0 9px #fbf3df;
-      }
-
-      #menu-panel .panel-header {
-        display: grid;
-        justify-items: center;
-        gap: 10px;
-        margin-bottom: 30px;
-        text-align: center;
-      }
-
-      #menu-panel .panel-header::before,
-      #menu-panel .panel-header::after {
-        content: "";
-        width: min(220px, 60%);
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #b88928, transparent);
       }
 
       .restaurant-menu {
@@ -542,16 +502,10 @@
       function renderCollection(tabName, collection, isChecklist) {
         const panel = panels[tabName];
         const categories = filterCategories(collection.categories || []);
-        const itemCount = categories.reduce((total, category) => total + category.items.length, 0);
-        const children = [
+
+        panel.replaceChildren(
           categories.length ? gridFor(categories, isChecklist) : emptyFor()
-        ];
-
-        if (isChecklist) {
-          children.unshift(headerFor(collection.title, itemCount));
-        }
-
-        panel.replaceChildren(...children);
+        );
       }
 
       function filterCategories(categories) {
@@ -561,21 +515,6 @@
             items: category.items || []
           }))
           .filter((category) => category.items.length);
-      }
-
-      function headerFor(title, itemCount) {
-        const header = document.createElement("div");
-        header.className = "panel-header";
-
-        const heading = document.createElement("h2");
-        heading.textContent = title;
-
-        const meta = document.createElement("p");
-        meta.className = "meta";
-        meta.textContent = `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
-
-        header.append(heading, meta);
-        return header;
       }
 
       function gridFor(categories, isChecklist) {
