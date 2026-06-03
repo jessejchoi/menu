@@ -105,7 +105,7 @@
 
       .content {
         flex: 1;
-        margin-top: -28px;
+        margin-top: 0;
         padding-bottom: 48px;
       }
 
@@ -160,16 +160,6 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 10px;
-      }
-
-      .search {
-        min-width: min(100%, 260px);
-        min-height: 42px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 0 14px;
-        background: #fff;
-        color: var(--ink);
       }
 
       .button {
@@ -446,7 +436,6 @@
 
         .toolbar,
         .tools,
-        .search,
         .button {
           width: 100%;
         }
@@ -493,7 +482,6 @@
             </div>
 
             <div class="tools">
-              <input class="search" id="search" type="search" autocomplete="off" placeholder="Filter items">
               <button class="button" id="clear-checked" type="button">Clear checks</button>
             </div>
           </div>
@@ -514,7 +502,6 @@
         activeTab: "menu",
         data: null,
         checked: readChecked(),
-        query: ""
       };
 
       const tabs = Array.from(document.querySelectorAll(".tab"));
@@ -522,7 +509,6 @@
         menu: document.querySelector("#menu-panel"),
         grocery: document.querySelector("#grocery-panel")
       };
-      const searchInput = document.querySelector("#search");
       const clearButton = document.querySelector("#clear-checked");
 
       tabs.forEach((tab) => {
@@ -531,11 +517,6 @@
           syncTabs();
           render();
         });
-      });
-
-      searchInput.addEventListener("input", (event) => {
-        state.query = event.target.value.trim().toLowerCase();
-        render();
       });
 
       clearButton.addEventListener("click", () => {
@@ -582,7 +563,7 @@
         return categories
           .map((category) => ({
             ...category,
-            items: (category.items || []).filter((item) => item.name.toLowerCase().includes(state.query))
+            items: category.items || []
           }))
           .filter((category) => category.items.length);
       }
