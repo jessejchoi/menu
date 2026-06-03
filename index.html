@@ -162,29 +162,6 @@
           0 4px 10px rgba(39, 33, 24, 0.16);
       }
 
-      .tools {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-      }
-
-      .button {
-        min-height: 38px;
-        border: 1px solid var(--line);
-        border-radius: 0;
-        padding: 0 16px;
-        background: transparent;
-        color: var(--olive);
-        cursor: pointer;
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .button:hover,
       .tab:hover {
         color: var(--accent-strong);
       }
@@ -205,7 +182,8 @@
         display: block;
       }
 
-      #menu-panel {
+      #menu-panel,
+      #grocery-panel {
         max-width: 920px;
         margin: 0 auto;
         padding: clamp(24px, 5vw, 48px);
@@ -274,28 +252,6 @@
         flex-basis: 6px;
         margin-top: 0.45em;
         background: #b88928;
-      }
-
-      .category-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-        gap: 22px;
-      }
-
-      .category {
-        border: 1px solid var(--line);
-        border-radius: 0;
-        background: #fffdf6;
-        overflow: hidden;
-      }
-
-      .category h3 {
-        padding: 16px;
-        border-bottom: 1px solid var(--line);
-        font-size: 0.95rem;
-        color: var(--olive);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
       }
 
       .item-list {
@@ -370,6 +326,42 @@
         text-decoration-color: rgba(135, 63, 69, 0.65);
       }
 
+      .restaurant-menu .grocery-row {
+        min-height: 0;
+      }
+
+      .restaurant-menu .check-item {
+        width: 100%;
+        min-height: 0;
+        align-items: flex-start;
+        padding: 0 0 14px;
+        border-bottom: 1px dotted #d9c8a0;
+        border-radius: 0;
+        color: #2e2a20;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.25;
+      }
+
+      .restaurant-menu .check-item:hover {
+        background: transparent;
+        color: #7c4f19;
+      }
+
+      .restaurant-menu .check-item input {
+        width: 18px;
+        height: 18px;
+        flex-basis: 18px;
+        margin-top: 0.05em;
+        border-color: #b88928;
+        background: #fffdf6;
+      }
+
+      .restaurant-menu .check-item input:checked {
+        border-color: var(--olive);
+        background: var(--olive);
+      }
+
       .empty,
       .error {
         border: 1px dashed var(--line);
@@ -395,9 +387,7 @@
           padding: 16px;
         }
 
-        .tabs,
-        .tools,
-        .button {
+        .tabs {
           width: 100%;
         }
 
@@ -407,15 +397,8 @@
           justify-self: center;
         }
 
-        .tools {
-          justify-content: stretch;
-        }
-
-        .button {
-          justify-content: center;
-        }
-
-        #menu-panel {
+        #menu-panel,
+        #grocery-panel {
           padding: 24px 16px;
           box-shadow: inset 0 0 0 5px #fbf3df;
         }
@@ -447,10 +430,6 @@
               <button class="tab" id="menu-tab" type="button" role="tab" aria-selected="true" aria-controls="menu-panel" data-tab="menu">Menu</button>
               <button class="tab" id="grocery-tab" type="button" role="tab" aria-selected="false" aria-controls="grocery-panel" data-tab="grocery">Grocery</button>
             </div>
-
-            <div class="tools">
-              <button class="button" id="clear-checked" type="button">Clear checks</button>
-            </div>
           </div>
 
           <div class="panels">
@@ -476,7 +455,6 @@
         menu: document.querySelector("#menu-panel"),
         grocery: document.querySelector("#grocery-panel")
       };
-      const clearButton = document.querySelector("#clear-checked");
 
       tabs.forEach((tab) => {
         tab.addEventListener("click", () => {
@@ -484,12 +462,6 @@
           syncTabs();
           render();
         });
-      });
-
-      clearButton.addEventListener("click", () => {
-        state.checked = {};
-        writeChecked(state.checked);
-        render();
       });
 
       scheduleDailyChecklistReset();
@@ -513,7 +485,6 @@
 
         renderCollection("menu", state.data.menu, false);
         renderCollection("grocery", state.data.grocery, true);
-        clearButton.hidden = state.activeTab !== "grocery";
       }
 
       function renderCollection(tabName, collection, isChecklist) {
@@ -536,7 +507,7 @@
 
       function gridFor(categories, isChecklist) {
         const grid = document.createElement("div");
-        grid.className = isChecklist ? "category-grid" : "restaurant-menu";
+        grid.className = isChecklist ? "restaurant-menu grocery-menu" : "restaurant-menu";
 
         categories.forEach((category) => {
           const card = document.createElement("article");
@@ -573,6 +544,7 @@
         const text = document.createElement("span");
 
         row.append(label);
+        row.className = "grocery-row";
         label.className = "check-item";
         checkbox.type = "checkbox";
         checkbox.checked = Boolean(state.checked[item.id]);
