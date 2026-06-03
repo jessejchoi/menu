@@ -515,6 +515,7 @@
         render();
       });
 
+      scheduleDailyChecklistReset();
       loadData();
 
       async function loadData() {
@@ -542,11 +543,15 @@
         const panel = panels[tabName];
         const categories = filterCategories(collection.categories || []);
         const itemCount = categories.reduce((total, category) => total + category.items.length, 0);
-
-        panel.replaceChildren(
-          headerFor(collection.title, itemCount),
+        const children = [
           categories.length ? gridFor(categories, isChecklist) : emptyFor()
-        );
+        ];
+
+        if (isChecklist) {
+          children.unshift(headerFor(collection.title, itemCount));
+        }
+
+        panel.replaceChildren(...children);
       }
 
       function filterCategories(categories) {
@@ -658,14 +663,47 @@
 
       function readChecked() {
         try {
-          return JSON.parse(localStorage.getItem(CHECKED_KEY)) || {};
+          const saved = JSON.parse(localStorage.getItem(CHECKED_KEY));
+
+          if (!saved || saved.date !== todayKey()) {
+            localStorage.removeItem(CHECKED_KEY);
+            return {};
+          }
+
+          return saved.items || {};
         } catch {
           return {};
         }
       }
 
       function writeChecked(checked) {
-        localStorage.setItem(CHECKED_KEY, JSON.stringify(checked));
+        localStorage.setItem(CHECKED_KEY, JSON.stringify({
+          date: todayKey(),
+          items: checked
+        }));
+      }
+
+      function todayKey() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+      }
+
+      function scheduleDailyChecklistReset() {
+        const now = new Date();
+        const midnight = new Date(now);
+
+        midnight.setHours(24, 0, 0, 0);
+
+        window.setTimeout(() => {
+          state.checked = {};
+          localStorage.removeItem(CHECKED_KEY);
+          render();
+          scheduleDailyChecklistReset();
+        }, midnight.getTime() - now.getTime());
       }
     </script>
   </body>

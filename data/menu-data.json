@@ -23,6 +23,14 @@
           { "id": "sweet-potato-fries", "name": "sweet potato fries" },
           { "id": "tofu-tempeh", "name": "tofu & tempeh" }
         ]
+      },
+      {
+        "id": "soup",
+        "name": "Soup",
+        "items": [
+          { "id": "miyukgook", "name": "Miyukgook" },
+          { "id": "chicken-soup", "name": "Chicken soup" }
+        ]
       }
     ]
   },
@@ -30,50 +38,20 @@
     "title": "Grocery Checklist",
     "categories": [
       {
-        "id": "protein",
-        "name": "Protein",
+        "id": "grocery-list",
+        "name": "Grocery List",
         "items": [
-          { "id": "chicken", "name": "Chicken" },
-          { "id": "thin-sliced-beef", "name": "Thin-sliced beef" },
-          { "id": "tofu", "name": "Tofu" },
-          { "id": "tempeh", "name": "Tempeh" },
-          { "id": "eggs", "name": "Eggs" }
-        ]
-      },
-      {
-        "id": "produce",
-        "name": "Produce",
-        "items": [
-          { "id": "napa-cabbage", "name": "Napa cabbage" },
-          { "id": "broccoli", "name": "Broccoli" },
-          { "id": "sweet-potatoes", "name": "Sweet potatoes" },
-          { "id": "ginger", "name": "Ginger" },
-          { "id": "garlic", "name": "Garlic" },
-          { "id": "scallions", "name": "Scallions" },
-          { "id": "lime", "name": "Lime" },
-          { "id": "greens-for-pecel", "name": "Greens for pecel" }
-        ]
-      },
-      {
-        "id": "pantry",
-        "name": "Pantry",
-        "items": [
-          { "id": "rice", "name": "Rice" },
-          { "id": "rice-flour", "name": "Rice flour" },
-          { "id": "soy-sauce", "name": "Soy sauce" },
-          { "id": "sesame-oil", "name": "Sesame oil" },
-          { "id": "chicken-broth", "name": "Chicken broth" },
-          { "id": "peanut-sauce", "name": "Peanut sauce" },
-          { "id": "gochugaru", "name": "Gochugaru" },
-          { "id": "dashi-or-shabu-broth", "name": "Dashi or shabu broth" }
-        ]
-      },
-      {
-        "id": "frozen",
-        "name": "Frozen",
-        "items": [
-          { "id": "shabu-vegetables", "name": "Shabu vegetables" },
-          { "id": "dumpling-wrappers", "name": "Dumpling wrappers" }
+          { "id": "bread", "name": "bread" },
+          { "id": "kiwi", "name": "kiwi" },
+          { "id": "mango", "name": "mango" },
+          { "id": "blueberries", "name": "blueberries" },
+          { "id": "grapes", "name": "grapes" },
+          { "id": "bananas", "name": "bananas" },
+          { "id": "strawberries", "name": "strawberries" },
+          { "id": "eggs", "name": "eggs" },
+          { "id": "avocados", "name": "avocados" },
+          { "id": "greek-yogurt", "name": "greek yogurt" },
+          { "id": "kiefer", "name": "kiefer" }
         ]
       }
     ]
